@@ -4,6 +4,7 @@ namespace App\Http\Repositories;
 
 use App\Http\Repositories\BaseRepository;
 use App\Models\Folder;
+use Carbon\Carbon;
 
 class FolderRepository extends BaseRepository
 {
@@ -14,7 +15,11 @@ class FolderRepository extends BaseRepository
 
     public function index()
     {
-        return $this->model->with('files')->get();
+        $folders = $this->model->with('files')->get();
+        foreach ($folders as $folder) {
+            $folder->created_at = Carbon::parse($folder->created_at)->format('m-d-Y');
+        }
+        return $folders;
     }
 
     public function store($data)
