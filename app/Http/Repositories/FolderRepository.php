@@ -14,7 +14,7 @@ class FolderRepository extends BaseRepository
 
     public function index()
     {
-        return $this->model->with('files')->all();
+        return $this->model->with('files')->get();
     }
 
     public function store($data)
