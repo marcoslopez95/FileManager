@@ -25,7 +25,9 @@ class FolderRepository extends BaseRepository
     public function store($data)
     {
         return parent::store($data);
+        //
     }
+
 
     public function update($id, $data)
     {
