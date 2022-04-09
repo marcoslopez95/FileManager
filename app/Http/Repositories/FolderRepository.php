@@ -12,6 +12,12 @@ class FolderRepository extends BaseRepository
         parent::__construct($model);
     }
 
+    public function index()
+    {
+        $this->model->load('files');
+        return $this->model;
+    }
+
     public function store($data)
     {
         return parent::store($data);
