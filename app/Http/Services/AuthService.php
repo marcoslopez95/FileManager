@@ -12,9 +12,14 @@ class AuthService
         if (Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
             $authUser = Auth::user();
             //ignorar error
+            if(count($authUser->tokens)>0){
+                foreach ($authUser->tokens as $token) {
+                    $token->delete();
+                }
+            }
             $success['token'] =  $authUser->createToken('Login')->plainTextToken;
             $success['name'] =  $authUser->name;
-            //$request->session()->regenerate();
+
             return $this->sendResponse( $success, 'User signed in');
         }else{
             return self::sendResponse(false,'Desautorizado');

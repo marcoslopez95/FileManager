@@ -19,7 +19,7 @@ class FileUpdateRequest extends BaseRequest
     {
         return [
             //
-            'name' => ['required', 'string', Rule::unique('files', 'name')->ignore($this->file, "name")],
+          //  'name' => ['required', 'string', Rule::unique('files', 'name')->ignore($this->file, "name")],
             'description' => 'required|string',
             'folder_id' => 'required|numeric|exists:App\Models\Folder,id'
         ];

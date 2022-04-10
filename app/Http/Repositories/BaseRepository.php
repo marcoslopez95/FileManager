@@ -52,4 +52,15 @@ class BaseRepository
         $data['updated_id'] = $this->user->id;
         return $this->object->delete();
     }
+
+    public function CheckedAdmin(){
+        $roles = Auth::user()->roles;
+        foreach ($roles as $rol) {
+            if($rol->id == 1){
+                return true;
+            }
+        }
+        return false;
+
+    }
 }

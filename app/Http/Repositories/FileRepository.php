@@ -12,14 +12,13 @@ class FileRepository extends BaseRepository
         parent::__construct($model);
     }
 
-    public function store($data)
+    public function filtro($request)
     {
-        return parent::store($data);
+        $files = $this->model->filter($request)->get();
+        return $files;
     }
 
-    public function update($id, $data)
-    {
-        return  parent::update($id, $data);
+    public function saludo(){
+        return 'hola';
     }
-
 }

@@ -16,7 +16,8 @@ class FileStoreRequest extends BaseRequest
     {
         return [
             //
-            'name' => 'required|string|unique:files',
+            //'name' => 'required|string|unique:files',
+            'file' => 'required|file|mimes:doc,docx,xls,xlsx',
             'description' => 'required|string',
             'folder_id' => 'required|numeric|exists:folders,id'
         ];
@@ -28,10 +29,12 @@ class FileStoreRequest extends BaseRequest
         return [
             'required' => 'El campo :attribute es requerido',
             'string' => 'El campo :attribute debe ser texto',
+            'mimes' => 'Solo se permiten archivos con extension: :values',
             'unique' => 'El campo :attribute debe ser único',
             'numeric' => 'El campo :attribute debe ser un numero',
             'exists' => 'El campo :attribute no es una carpeta'
         ];
     }
+
 
 }

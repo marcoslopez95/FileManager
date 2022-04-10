@@ -63,8 +63,18 @@ class User extends Authenticatable
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasManyThrough
      */
-    public function files(): HasManyThrough
+    // public function files(): HasManyThrough
+    // {
+    //     return $this->hasManyThrough(File::class, FilePermit::class);
+    // }
+
+    /**
+     * The files that belong to the User
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function files(): BelongsToMany
     {
-        return $this->hasManyThrough(File::class, FilePermit::class);
+        return $this->belongsToMany(File::class, 'file_permits', 'user_id', 'file_id');
     }
 }

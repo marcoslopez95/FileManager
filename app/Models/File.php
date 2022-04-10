@@ -23,6 +23,7 @@ class File extends Model
         'name',
         'description',
         'folder_id',
+        'path',
         'created_id',
         'updated_id'
     ];
