@@ -6,7 +6,9 @@ use App\Http\Repositories\BaseRepository;
 use Facade\FlareClient\Http\Exceptions\BadResponse;
 use Facade\FlareClient\Http\Response;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class BaseService
 {
@@ -16,28 +18,18 @@ class BaseService
     {
         $this->repository = $repository;
     }
-    public function error($error)
-    {
-        return [
-            'status' => 425,
-            'error' => true,
-            'message' => $error
-        ];
-    }
 
     public function index()
     {
         try {
-            $list = $this->repository->index();
-            $mensaje = [
-                'status' => 200,
-                'datos' => $list,
-                'total' => count($list)
-            ];
+            $object = $this->repository->index();
 
-            return Response()->json($mensaje);
+            return self::sendResponse(true,'Index',$object);
         } catch (\Exception $e) {
-            return Response()->json(self::error($e->getMessage()), 425);
+            DB::rollback();
+            self::Loggin($e);
+            $error = 'No se pudo guardar el registro';
+            return self::sendResponse(false, $error, $e->getMessage());
         }
     }
 
@@ -46,15 +38,13 @@ class BaseService
         DB::beginTransaction();
         try {
             $object = $this->repository->store($request->all());
-            $mensaje = [
-                'status' => 201,
-                'registro' => $object
-            ];
             DB::commit();
-            return Response()->json($mensaje, 201);
+            return self::sendResponse(true,'Registro insertado',$object,201);
         } catch (\Exception $e) {
             DB::rollback();
-            return Response()->json(self::error($e->getMessage()), 425);
+            self::Loggin($e);
+            $error = 'No se pudo guardar el registro';
+            return self::sendResponse(false, $error, $e->getMessage());
         }
     }
 
@@ -62,13 +52,12 @@ class BaseService
     {
         try {
             $object = $this->repository->show($id);
-            $mensaje = [
-                'registro' => $object
-            ];
-
-            return Response()->json($mensaje);
+            return self::sendResponse(true,'Mostrar Registro',$object);
         } catch (\Exception $e) {
-            return Response()->json(self::error($e->getMessage()), 425);
+            DB::rollback();
+            self::Loggin($e);
+            $error = 'No se pudo hacer la consulta';
+            return self::sendResponse(false, $error, $e->getMessage());
         }
     }
 
@@ -77,14 +66,14 @@ class BaseService
         DB::beginTransaction();
         try {
             $object = $this->repository->update($id, $request->all());
-            $mensaje = [
-                'registro' => $object
-            ];
             DB::commit();
-            return Response()->json($mensaje);
+
+            return self::sendResponse(true,'Registro Actualizado',$object);
         } catch (\Exception $e) {
             DB::rollback();
-            return Response()->json(self::error($e->getMessage()), 425);
+            self::Loggin($e);
+            $error = 'No se pudo actualizar';
+            return self::sendResponse(false, $error, $e->getMessage());
         }
     }
 
@@ -92,15 +81,57 @@ class BaseService
     {
         DB::beginTransaction();
         try {
+
             $object = $this->repository->delete($id);
-            $mensaje = [
-                'mensaje' => 'Registro Eliminado'
-            ];
             DB::commit();
-            return Response()->json($mensaje);
+
+            return self::sendResponse(true,'Registro Eliminado');
+
         } catch (\Exception $e) {
             DB::rollback();
-            return Response()->json(self::error($e->getMessage()), 425);
+            self::Loggin($e);
+            $error = 'No se puede eliminar';
+            return self::sendResponse(false, $error, $e->getMessage());
         }
     }
+
+    public function sendResponse($success = true, $message, $data = [], $code = 200)
+    {
+        if(!$success){
+            if($code == 200){
+                $code = 425;
+            }
+            if(!empty($errorMessages)){
+                $response['data'] = $data;
+            }
+        }
+
+        $response = [
+            'success' => $success,
+            'message' => $message,
+            'data'    => $data,
+        ];
+
+        if(!$success){
+            $response['total'] = 0;
+        }else{
+            if($message != 'Index'){
+                $response['total'] = 1;
+            }else{
+                $response['total'] = count($data);
+            }
+        }
+
+        return response()->json($response, $code);
+    }
+
+    public function Loggin(\Exception $e){
+        $problem = [
+            'problema' => $e->getMessage(),
+            'linea' => $e->getLine(),
+            'archivo' => $e->getFile()
+        ];
+        Log::info($problem);
+    }
+
 }

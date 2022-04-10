@@ -3,15 +3,18 @@
 namespace App\Http\Repositories;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 
 class BaseRepository
 {
     protected $model;
     protected $object;
+    protected $user;
 
     public function __construct(Model $model)
     {
         $this->model = $model;
+
     }
 
     public function index()
@@ -21,8 +24,9 @@ class BaseRepository
 
     public function store($data)
     {
-        $data['created_id'] = 0;
-        $data['updated_id'] = 0;
+        $this->user = Auth::user();
+        $data['created_id'] = $data['updated_id'] = $this->user->id;
+
         $this->object = $this->model->create($data);
         return $this->object;
     }
@@ -34,8 +38,8 @@ class BaseRepository
 
     public function update($id, $data)
     {
-        $data['created_id'] = 0;
-        $data['updated_id'] = 0;
+        $this->user = Auth::user();
+        $data['updated_id'] = $this->user->id;
         self::show($id);
         $this->object->update($data);
         return $this->object->refresh();
@@ -43,7 +47,9 @@ class BaseRepository
 
     public function delete($id)
     {
+        $this->user = Auth::user();
         self::show($id);
+        $data['updated_id'] = $this->user->id;
         return $this->object->delete();
     }
 }

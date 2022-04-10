@@ -2,22 +2,9 @@
 
 namespace App\Http\Requests\Permit;
 
-use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Http\Response;
-use Illuminate\Validation\ValidationException;
-
-class PermitStoreRequest extends FormRequest
+use App\Http\Requests\BaseRequest;
+class PermitStoreRequest extends BaseRequest
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     *
-     * @return bool
-     */
-    public function authorize()
-    {
-        return true;
-    }
-
     /**
      * Get the validation rules that apply to the request.
      *
@@ -41,13 +28,4 @@ class PermitStoreRequest extends FormRequest
         ];
     }
 
-    protected function failedValidation(\Illuminate\Contracts\Validation\Validator $validator)
-    {
-        $response = new Response([
-            'status' => 422,
-            'error' => true,
-            'message' => $validator->errors()->first()
-        ], 422);
-        throw new ValidationException($validator, $response);
-    }
 }

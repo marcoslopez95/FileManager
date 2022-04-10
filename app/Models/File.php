@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class File extends Model
@@ -26,6 +27,20 @@ class File extends Model
         'updated_id'
     ];
 
+    public function scopeFilter($builder, $request)
+    {
+        $builder
+            ->when($request->name, function ($query, $name) {
+                return $query->where('name', 'ilike', "%$name%");
+            })
+            ->when($request->created_id, function ($query, $created) {
+                return $query->where('created_id', $created);
+            })
+            ->when($request->updated_id, function ($query, $updated) {
+                return $query->where('updated_id', $updated);
+            });
+    }
+
     /**
      * The permits that belong to the File
      *
@@ -44,5 +59,15 @@ class File extends Model
     public function folder(): BelongsTo
     {
         return $this->belongsTo(Folder::class);
+    }
+
+    /**
+     * Get all of the usuarios for the File
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasManyThrough
+     */
+    public function usuarios(): HasManyThrough
+    {
+        return $this->hasManyThrough(User::class, FilePermit::class);
     }
 }

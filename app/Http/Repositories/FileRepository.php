@@ -21,4 +21,5 @@ class FileRepository extends BaseRepository
     {
         return  parent::update($id, $data);
     }
+
 }
