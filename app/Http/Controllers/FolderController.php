@@ -6,6 +6,7 @@ use App\Http\Requests\Folder\FolderStoreRequest;
 use App\Http\Requests\Folder\FolderUpdateRequest;
 use App\Http\Services\FolderService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class FolderController extends BaseController
 {
@@ -32,6 +33,7 @@ class FolderController extends BaseController
      */
     public function store(FolderStoreRequest $request)
     {
+
         return parent::_store($request);
     }
 

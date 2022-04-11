@@ -4,12 +4,16 @@ namespace App\Http\Requests\Admin;
 
 use App\Http\Requests\BaseRequest;
 
-class AsignarRolRequest extends BaseRequest
+class AsignarCarpetasRequest extends BaseRequest
 {
+    /**
+     * Determine if the user is authorized to make this request.
+     *
+     * @return bool
+     */
     public function authorize()
     {
         $roles = $this->user()->roles;
-        return true;
         foreach ($roles as $rol) {
             if($rol->id == 1)
                 return true;
@@ -17,7 +21,7 @@ class AsignarRolRequest extends BaseRequest
         return false;
     }
 
-    /**
+     /**
      * Get the validation rules that apply to the request.
      *
      * @return array
@@ -26,8 +30,8 @@ class AsignarRolRequest extends BaseRequest
     {
         return [
             //
-            'rols' => 'required|array|min:1',
-            'rols.*' => 'numeric|exists:rols,id',
+            'folders' => 'required|array|min:1',
+            'folders.*' => 'numeric|exists:folders,id',
             'user' => 'required|numeric|exists:users,id'
         ];
     }
@@ -36,12 +40,11 @@ class AsignarRolRequest extends BaseRequest
     {
         return [
             'required' => 'El :attribute es requerido',
-            'array' => 'rols debe ser un array',
+            'array' => 'files debe ser un array',
             'min' => 'Debe enviarse al menos un rol',
-            'rols.*.exists' => 'No existe el rol',
+            'files.*.exists' => 'No existe el rol',
             'user.exists' => 'No existe el usuario',
             'numeric' => ':attribute debe ser un número'
         ];
     }
 }
-

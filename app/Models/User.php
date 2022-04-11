@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\DB;
 use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
@@ -76,5 +77,19 @@ class User extends Authenticatable
     public function files(): BelongsToMany
     {
         return $this->belongsToMany(File::class, 'file_permits', 'user_id', 'file_id');
+    }
+
+    /**
+     * The folders that belong to the User
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function folders(): BelongsToMany
+    {
+        return $this->belongsToMany(Folder::class, 'folder_user', 'user_id', 'folder_id');
+    }
+
+    public function scopeFolderByUser($builder,$id){
+        $builder->where('folder_use.permit_id','=',DB::raw('ANY(1,6)'));
     }
 }

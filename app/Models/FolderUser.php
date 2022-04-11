@@ -5,16 +5,14 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class FilePermit extends Model
+class FolderUser extends Model
 {
     use HasFactory;
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array
-     */
+
+    protected $table = 'folder_user';
+
     protected $fillable = [
-        'file_id',
+        'folder_id',
         'permit_id',
         'user_id',
         'created_id',

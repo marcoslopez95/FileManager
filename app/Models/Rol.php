@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Rol extends Model
@@ -33,5 +34,15 @@ class Rol extends Model
     public function users(): HasMany
     {
         return $this->hasMany(User::class, 'rol_id');
+    }
+
+    /**
+     * The permits that belong to the Rol
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function permits(): BelongsToMany
+    {
+        return $this->belongsToMany(Permit::class, 'permit_rol', 'rol_id', 'permit_id');
     }
 }

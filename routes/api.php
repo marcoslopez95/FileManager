@@ -21,7 +21,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::post('/login',[AuthController::class,'Login']);
-Route::get('error', function(Request $request){
+Route::any('error', function(Request $request){
 
     return $request->response;
 })->name('error');
@@ -31,7 +31,7 @@ Route::middleware(['auth:sanctum'])->group(function(){
         //session(['user'=>$request->user()]);
         //$request->session()->put('user',$request->user());
 
-        return $request->user()->roles;
+        return $request->user();
         //return $request->session()->all();
     });
     Route::get('/logout',[AuthController::class,'Logout']);
@@ -42,6 +42,7 @@ Route::middleware(['auth:sanctum'])->group(function(){
     ########################
     Route::post('/rol_user', [AdminController::class,'AsignarRol']);
     Route::post('/file_user', [AdminController::class,'AsignarArchivos']);
+    Route::post('/folder_user', [AdminController::class,'AsignarCarpetas']);
 
 });
 

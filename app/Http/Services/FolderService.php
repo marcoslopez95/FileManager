@@ -6,6 +6,7 @@ use App\Http\Repositories\FolderRepository;
 use App\Http\Services\BaseService;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 
 class FolderService extends BaseService
@@ -18,9 +19,10 @@ class FolderService extends BaseService
     public function store(Request $request)
     {
         try {
+            self::CheckedPermitCreate();
             $folder = $this->repository->store($request->all());
             Storage::makeDirectory($request->name);
-            return self::sendResponse(true,'Registro insertado',$folder,201);
+            return self::sendResponse(true, 'Registro insertado', $folder, 201);
         } catch (\Exception $e) {
             self::Loggin($e);
             $error = 'No se pudo guardar el registro';

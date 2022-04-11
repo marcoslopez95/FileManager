@@ -12,6 +12,10 @@ use Illuminate\Support\Facades\Storage;
 
 class FileService extends BaseService
 {
+    protected $permitCreate = 4;
+    protected $permitDelete = 6;
+    protected $permitUpdate = 5;
+
     public function __construct(FileRepository $repository)
     {
         parent::__construct($repository);
@@ -25,6 +29,7 @@ class FileService extends BaseService
         // $extension = $upload->getClientOriginalExtension();
 
         try {
+            self::CheckedPermitCreate();
             self::CheckedName($name);
             $path = $upload->storeAs($folder->name,$name);
             $request['name'] = $name;

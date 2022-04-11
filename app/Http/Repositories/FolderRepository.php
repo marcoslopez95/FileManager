@@ -5,6 +5,7 @@ namespace App\Http\Repositories;
 use App\Http\Repositories\BaseRepository;
 use App\Models\Folder;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 
 class FolderRepository extends BaseRepository
 {
@@ -15,10 +16,11 @@ class FolderRepository extends BaseRepository
 
     public function index()
     {
+        $folders = $this->model->with('files')->orderBy('name');
         if(self::CheckedAdmin()){
-            $folders = $this->model->with('files')->orderBy('name')->get();
+            $folders = $folders->get();
         }else{
-
+            $folders = $folders->FolderByUser(Auth::user()->id)->get();
         }
         foreach ($folders as $folder) {
             $folder->created_at = Carbon::parse($folder->created_at)->format('m-d-Y');

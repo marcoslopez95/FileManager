@@ -28,7 +28,7 @@ class AdminService extends BaseService
                 'created_id' => $logged_id,
                 'updated_id' => $logged_id,
             ];
-            $user->roles()->sync($request->rols,$log);
+            $user->roles()->syncWithPivotValues($request->rols,$log);
             DB::commit();
             $user->load('roles');
             return self::sendResponse(true,'Permisos cambiados',$user);
@@ -38,6 +38,26 @@ class AdminService extends BaseService
             $error = 'No se pudo actualizar el registro';
             return self::sendResponse(false, $error, $e->getMessage());
         }
+    }
 
+    public function AsignarCarpetas($request){
+        DB::beginTransaction();
+        try {
+            $user = $this->repository->show($request->user);
+            $logged_id = Auth::user()->id;
+            $log = [
+                'created_id' => $logged_id,
+                'updated_id' => $logged_id,
+            ];
+            $user->folders()->sync($request->folders,$log);
+            DB::commit();
+            $user->load('roles');
+            return self::sendResponse(true,'Permisos cambiados',$user);
+        } catch (\Exception $e) {
+            DB::rollback();
+            self::Loggin($e);
+            $error = 'No se pudo actualizar el registro';
+            return self::sendResponse(false, $error, $e->getMessage());
+        }
     }
 }
