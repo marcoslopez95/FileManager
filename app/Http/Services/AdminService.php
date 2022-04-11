@@ -19,7 +19,8 @@ class AdminService extends BaseService
         $this->rols = $rol;
     }
 
-    public function AsignarRol(Request $request){
+    public function AsignarRol(Request $request)
+    {
         DB::beginTransaction();
         try {
             $user = $this->repository->show($request->user);
@@ -28,10 +29,10 @@ class AdminService extends BaseService
                 'created_id' => $logged_id,
                 'updated_id' => $logged_id,
             ];
-            $user->roles()->syncWithPivotValues($request->rols,$log);
+            $user->roles()->attach($request->rols, $log);
             DB::commit();
             $user->load('roles');
-            return self::sendResponse(true,'Permisos cambiados',$user);
+            return self::sendResponse(true, 'Permisos cambiados', $user);
         } catch (\Exception $e) {
             DB::rollback();
             self::Loggin($e);
@@ -40,19 +41,24 @@ class AdminService extends BaseService
         }
     }
 
-    public function AsignarCarpetas($request){
+    public function AsignarCarpetas($request)
+    {
         DB::beginTransaction();
         try {
-            $user = $this->repository->show($request->user);
             $logged_id = Auth::user()->id;
-            $log = [
-                'created_id' => $logged_id,
-                'updated_id' => $logged_id,
-            ];
-            $user->folders()->sync($request->folders,$log);
+            $data = [];
+            for ($i = 0; $i < count($request->folders); $i++) {
+                $data[] = [
+                    'folder_id' => $request->folders[$i],
+                    'user_id' => $request->user,
+                    'created_id' => $logged_id,
+                    'updated_id' => $logged_id
+                ];
+            }
+            $this->repository->AsignarCarpetas($request->user, $data);
             DB::commit();
             $user->load('roles');
-            return self::sendResponse(true,'Permisos cambiados',$user);
+            return self::sendResponse(true, 'Permisos cambiados', $user);
         } catch (\Exception $e) {
             DB::rollback();
             self::Loggin($e);

@@ -6,6 +6,7 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -24,7 +25,7 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'name',
-        'last_name',
+        'last_names',
         'email',
         'password',
         'rol_id'
@@ -74,22 +75,28 @@ class User extends Authenticatable
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
-    public function files(): BelongsToMany
-    {
-        return $this->belongsToMany(File::class, 'file_permits', 'user_id', 'file_id');
-    }
+    // public function files(): BelongsToMany
+    // {
+    //     return $this->belongsToMany(File::class, 'file_permits', 'user_id', 'file_id');
+    // }
+
+    // /**
+    //  * The folders that belong to the User
+    //  *
+    //  * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    //  */
+    // public function foldersByUser(): BelongsToMany
+    // {
+    //     return $this->belongsToMany(Folder::class, 'folder_user', 'user_id', 'folder_id');
+    // }
 
     /**
-     * The folders that belong to the User
+     * Get all of the Folders for the User
      *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function folders(): BelongsToMany
+    public function Folders(): HasMany
     {
-        return $this->belongsToMany(Folder::class, 'folder_user', 'user_id', 'folder_id');
-    }
-
-    public function scopeFolderByUser($builder,$id){
-        $builder->where('folder_use.permit_id','=',DB::raw('ANY(1,6)'));
+        return $this->hasMany(FolderUser::class);
     }
 }

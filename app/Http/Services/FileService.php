@@ -12,9 +12,10 @@ use Illuminate\Support\Facades\Storage;
 
 class FileService extends BaseService
 {
-    protected $permitCreate = 4;
-    protected $permitDelete = 6;
-    protected $permitUpdate = 5;
+    protected $permitCreate = 5;
+    protected $permitShow = 6;
+    protected $permitUpdate = 7;
+    protected $permitDelete = 8;
 
     public function __construct(FileRepository $repository)
     {
@@ -31,25 +32,36 @@ class FileService extends BaseService
         try {
             self::CheckedPermitCreate();
             self::CheckedName($name);
-            $path = $upload->storeAs($folder->name,$name);
+            if (!self::CheckedIsAdmin()) {
+                self::CheckedFolderPermit($request->folder_id);
+            }
+            $path = $upload->storeAs($folder->name, $name);
             $request['name'] = $name;
             $request['path'] = $path;
             //return $request->all();
             $file = $this->repository->store($request->all());
-            return self::sendResponse(true,'Registro insertado',$file,201);
+            return self::sendResponse(true, 'Registro insertado', $file, 201);
         } catch (\Exception $e) {
-            $path = $folder->name.'/'.$name;
+            $path = $folder->name . '/' . $name;
             self::Loggin($e);
             $error = 'No se pudo guardar el registro';
             return self::sendResponse(false, $error, $e->getMessage());
         }
     }
 
-    public function CheckedName($name){
-
-        $file = $this->repository->filtro(new Request(['name'=>$name]));
-        if($file->count() > 0){
+    public function CheckedName($name)
+    {
+        $file = $this->repository->filtro(new Request(['name' => $name]));
+        if ($file->count() > 0) {
             throw new \Exception("Ya existe un archivo con el mismo nombre");
+        }
+    }
+
+    public function CheckedFolderPermit($folder)
+    {
+        $folder_permits = Auth::user()->Folders;
+        if ($folder_permits->where('id', $folder)->count() == 0) {
+            throw new \Exception("No tiene permisos para agregar archivos a esa carpeta");
         }
     }
 }

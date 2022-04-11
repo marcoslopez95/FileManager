@@ -2,8 +2,12 @@
 
 namespace App\Http\Services;
 
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 
 class AuthService
 {
@@ -12,7 +16,7 @@ class AuthService
         if (Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
             $authUser = Auth::user();
             //ignorar error
-            if(count($authUser->tokens)>0){
+            if (count($authUser->tokens) > 0) {
                 foreach ($authUser->tokens as $token) {
                     $token->delete();
                 }
@@ -20,16 +24,17 @@ class AuthService
             $success['token'] =  $authUser->createToken('Login')->plainTextToken;
             $success['name'] =  $authUser->name;
 
-            return $this->sendResponse( $success, 'User signed in');
-        }else{
-            return self::sendResponse(false,'Desautorizado');
+            return $this->sendResponse($success, 'User signed in');
+        } else {
+            return self::sendResponse(false, 'Desautorizado');
         }
     }
 
-    public function Logout(){
+    public function Logout()
+    {
         //return Auth::logout();
         try {
-            //code...
+            //ignorar error
             Auth::user()->currentAccessToken()->delete();
             return response()->json('Logut');
         } catch (\Exception $th) {
@@ -37,14 +42,37 @@ class AuthService
         }
     }
 
-/*------------------------------------- */
+    public function Register($request)
+    {
+        DB::beginTransaction();
+        try {
+            $request['password'] = Hash::make($request->password);
+            $user = User::create($request->all());
+            $logged_id = $user->id;
+            $log = [
+                'created_id' => $logged_id,
+                'updated_id' => $logged_id,
+            ];
+            // rol 2 es lector
+            $user->roles()->attach(2, $log);
+            DB::commit();
+            return self::sendResponse(true, 'Usuario Creado', [$user]);
+        } catch (\Exception $e) {
+            DB::rollback();
+            self::Loggin($e);
+            $error = 'No se pudo guardar el registro';
+            return self::sendResponse(false, $error, $e->getMessage());
+        }
+    }
+
+    /*------------------------------------- */
     public function sendResponse($success = true, $message, $data = [], $code = 200)
     {
-        if(!$success){
-            if($code == 200){
+        if (!$success) {
+            if ($code == 200) {
                 $code = 425;
             }
-            if(!empty($errorMessages)){
+            if (!empty($errorMessages)) {
                 $response['data'] = $data;
             }
         }
@@ -57,5 +85,15 @@ class AuthService
         ];
 
         return response()->json($response, $code);
+    }
+
+    public function Loggin(\Exception $e)
+    {
+        $problem = [
+            'problema' => $e->getMessage(),
+            'linea' => $e->getLine(),
+            'archivo' => $e->getFile()
+        ];
+        Log::info($problem);
     }
 }

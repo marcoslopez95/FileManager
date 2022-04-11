@@ -12,4 +12,9 @@ class AdminRepository extends BaseRepository
         parent::__construct($model);
     }
 
+    public function AsignarCarpetas($user, $data)
+    {
+        $user = $this->repository->show($user);
+        $user->folders()->create($data);
+    }
 }

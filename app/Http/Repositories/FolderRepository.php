@@ -16,11 +16,10 @@ class FolderRepository extends BaseRepository
 
     public function index()
     {
-        $folders = $this->model->with('files')->orderBy('name');
-        if(self::CheckedAdmin()){
-            $folders = $folders->get();
-        }else{
-            $folders = $folders->FolderByUser(Auth::user()->id)->get();
+        if ($this->CheckedAdmin()) {
+            $folders = Folder::orderBy('name')->get();
+        } else {
+            $folders = Auth::user()->Folders;
         }
         foreach ($folders as $folder) {
             $folder->created_at = Carbon::parse($folder->created_at)->format('m-d-Y');

@@ -6,16 +6,19 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class FolderUser extends Model
+class FileUser extends Model
 {
     use HasFactory;
 
-    protected $table = 'folder_user';
-
+    protected $table = 'file_user';
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
     protected $fillable = [
-        'folder_id',
+        'file_id',
         'user_id',
         'created_id',
         'updated_id'
@@ -38,6 +41,6 @@ class FolderUser extends Model
      */
     public function Permits(): BelongsToMany
     {
-        return $this->belongsToMany(Permit::class, 'folder_user_permit', 'folder_user_id', 'permit_id');
+        return $this->belongsToMany(Permit::class, 'file_user_permit', 'file_user_id', 'permit_id');
     }
 }

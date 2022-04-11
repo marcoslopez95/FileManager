@@ -20,13 +20,14 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::post('/login',[AuthController::class,'Login']);
-Route::any('error', function(Request $request){
+Route::post('/login', [AuthController::class, 'Login']);
+Route::post('/register', [AuthController::class, 'Register']);
+Route::any('error', function (Request $request) {
 
     return $request->response;
 })->name('error');
 
-Route::middleware(['auth:sanctum'])->group(function(){
+Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/user', function (Request $request) {
         //session(['user'=>$request->user()]);
         //$request->session()->put('user',$request->user());
@@ -34,16 +35,13 @@ Route::middleware(['auth:sanctum'])->group(function(){
         return $request->user();
         //return $request->session()->all();
     });
-    Route::get('/logout',[AuthController::class,'Logout']);
+    Route::get('/logout', [AuthController::class, 'Logout']);
     Route::resource('permits', PermitController::class);
     Route::resource('folders', FolderController::class);
     Route::resource('files', FileController::class);
     Route::resource('rols', RolController::class);
     ########################
-    Route::post('/rol_user', [AdminController::class,'AsignarRol']);
-    Route::post('/file_user', [AdminController::class,'AsignarArchivos']);
-    Route::post('/folder_user', [AdminController::class,'AsignarCarpetas']);
-
+    Route::post('/rol_user', [AdminController::class, 'AsignarRol']);
+    Route::post('/file_user', [AdminController::class, 'AsignarArchivos']);
+    Route::post('/folder_user', [AdminController::class, 'AsignarCarpetas']);
 });
-
-

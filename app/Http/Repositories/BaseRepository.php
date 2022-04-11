@@ -14,7 +14,6 @@ class BaseRepository
     public function __construct(Model $model)
     {
         $this->model = $model;
-
     }
 
     public function index()
@@ -53,14 +52,14 @@ class BaseRepository
         return $this->object->delete();
     }
 
-    public function CheckedAdmin(){
+    public function CheckedAdmin()
+    {
         $roles = Auth::user()->roles;
         foreach ($roles as $rol) {
-            if($rol->id == 1){
+            if ($rol->id == 1) {
                 return true;
             }
         }
         return false;
-
     }
 }

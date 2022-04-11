@@ -13,9 +13,10 @@ use Illuminate\Support\Facades\Log;
 class BaseService
 {
     protected $repository;
-    protected $permitCreate = 1;
-    protected $permitDelete = 2;
-    protected $permitUpdate = 3;
+    protected $permitCreate;
+    protected $permitShow;
+    protected $permitUpdate;
+    protected $permitDelete;
 
     public function __construct(BaseRepository $repository)
     {
@@ -27,7 +28,7 @@ class BaseService
         try {
             $object = $this->repository->index();
 
-            return self::sendResponse(true,'Index',$object);
+            return self::sendResponse(true, 'Index', $object);
         } catch (\Exception $e) {
             DB::rollback();
             self::Loggin($e);
@@ -43,7 +44,7 @@ class BaseService
             self::CheckedPermitCreate();
             $object = $this->repository->store($request->all());
             DB::commit();
-            return self::sendResponse(true,'Registro insertado',$object,201);
+            return self::sendResponse(true, 'Registro insertado', $object, 201);
         } catch (\Exception $e) {
             DB::rollback();
             self::Loggin($e);
@@ -56,7 +57,7 @@ class BaseService
     {
         try {
             $object = $this->repository->show($id);
-            return self::sendResponse(true,'Mostrar Registro',$object);
+            return self::sendResponse(true, 'Mostrar Registro', $object);
         } catch (\Exception $e) {
             DB::rollback();
             self::Loggin($e);
@@ -73,7 +74,7 @@ class BaseService
             $object = $this->repository->update($id, $request->all());
             DB::commit();
 
-            return self::sendResponse(true,'Registro Actualizado',$object);
+            return self::sendResponse(true, 'Registro Actualizado', $object);
         } catch (\Exception $e) {
             DB::rollback();
             self::Loggin($e);
@@ -90,8 +91,7 @@ class BaseService
             $object = $this->repository->delete($id);
             DB::commit();
 
-            return self::sendResponse(true,'Registro Eliminado');
-
+            return self::sendResponse(true, 'Registro Eliminado');
         } catch (\Exception $e) {
             DB::rollback();
             self::Loggin($e);
@@ -102,11 +102,11 @@ class BaseService
 
     public function sendResponse($success = true, $message, $data = [], $code = 200)
     {
-        if(!$success){
-            if($code == 200){
+        if (!$success) {
+            if ($code == 200) {
                 $code = 425;
             }
-            if(!empty($errorMessages)){
+            if (!empty($errorMessages)) {
                 $response['data'] = $data;
             }
         }
@@ -117,12 +117,12 @@ class BaseService
             'data'    => $data,
         ];
 
-        if(!$success){
+        if (!$success) {
             $response['total'] = 0;
-        }else{
-            if($message != 'Index'){
+        } else {
+            if ($message != 'Index') {
                 $response['total'] = 1;
-            }else{
+            } else {
                 $response['total'] = count($data);
             }
         }
@@ -130,7 +130,8 @@ class BaseService
         return response()->json($response, $code);
     }
 
-    public function Loggin(\Exception $e){
+    public function Loggin(\Exception $e)
+    {
         $problem = [
             'problema' => $e->getMessage(),
             'linea' => $e->getLine(),
@@ -139,17 +140,25 @@ class BaseService
         Log::info($problem);
     }
 
+    public function CheckedIsAdmin()
+    {
+        $roles = Auth::user()->roles;
+        $roles->where('id', 1)->first();
+        if ($roles->where('id', 1)->first()) {
+            return true;
+        };
+        return false;
+    }
+
     public function CheckedPermitCreate()
     {
         $bool = false;
-        $roles = Auth::user()->roles;
-        $roles->where('id', 1)->first();
-        if($roles->where('id', 1)->first()){
+        if (self::CheckedIsAdmin()) {
             return;
-        };
+        }
         foreach (Auth::user()->roles as $rol) {
             foreach ($rol->permits as $permit) {
-                if ($permit == $this->permitCreate) {
+                if ($permit->id == $this->permitCreate) {
                     $bool = true;
                 }
             }
@@ -162,10 +171,10 @@ class BaseService
     public function CheckedPermitDelete()
     {
         $bool = false;
-        $roles = Auth::user()->roles;
-        if($roles->where('id', 1)->first()){
+        $bool = false;
+        if (self::CheckedIsAdmin()) {
             return;
-        };
+        }
 
         foreach (Auth::user()->roles as $rol) {
             foreach ($rol->permits as $permit) {
@@ -182,10 +191,10 @@ class BaseService
     public function CheckedPermitUpdated()
     {
         $bool = false;
-        $roles = Auth::user()->roles;
-        if($roles->where('id', 1)->first()){
+        $bool = false;
+        if (self::CheckedIsAdmin()) {
             return;
-        };
+        }
 
         foreach (Auth::user()->roles as $rol) {
             foreach ($rol->permits as $permit) {
@@ -198,5 +207,4 @@ class BaseService
             throw new \Exception("No tiene permisos para esta acción");
         }
     }
-
 }

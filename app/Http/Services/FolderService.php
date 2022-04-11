@@ -11,6 +11,11 @@ use Illuminate\Support\Facades\Storage;
 
 class FolderService extends BaseService
 {
+    protected $permitCreate = 1;
+    protected $permitShow = 2;
+    protected $permitUpdate = 3;
+    protected $permitDelete = 4;
+
     public function __construct(FolderRepository $repository)
     {
         parent::__construct($repository);
