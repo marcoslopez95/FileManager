@@ -41,6 +41,16 @@ class FileUser extends Model
      */
     public function Permits(): BelongsToMany
     {
-        return $this->belongsToMany(Permit::class, 'file_user_permit', 'file_user_id', 'permit_id');
+        return $this->belongsToMany(Permit::class, 'file_user_permit', 'file_user_id', 'permit_id')->withPivot(['created_id', 'updated_id']);
+    }
+
+    /**
+     * Get the File that owns the FileUser
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function File(): BelongsTo
+    {
+        return $this->belongsTo(File::class);
     }
 }

@@ -3,6 +3,7 @@
 namespace App\Http\Requests\File;
 
 use App\Http\Requests\BaseRequest;
+
 class FileStoreRequest extends BaseRequest
 {
 
@@ -17,9 +18,10 @@ class FileStoreRequest extends BaseRequest
         return [
             //
             //'name' => 'required|string|unique:files',
-            'file' => 'required|file|mimes:doc,docx,xls,xlsx',
+            'file' => ['required', 'file'],
+            'extension' => 'in:doc,docx,xls,xls,csv',
             'description' => 'required|string',
-            'folder_id' => 'required|numeric|exists:folders,id'
+            'folder' => 'required|string|exists:folders,name'
         ];
     }
 
@@ -36,5 +38,15 @@ class FileStoreRequest extends BaseRequest
         ];
     }
 
-
+    /**
+     * Prepare the data for validation.
+     *
+     * @return void
+     */
+    protected function prepareForValidation()
+    {
+        $this->merge([
+            'extension' => $this->file->getClientOriginalExtension(),
+        ]);
+    }
 }

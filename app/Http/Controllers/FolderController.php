@@ -70,4 +70,9 @@ class FolderController extends BaseController
     {
         return parent::_delete($id);
     }
+
+    public function filesByFolder($folder)
+    {
+        return $this->service->filesByFolder($folder);
+    }
 }

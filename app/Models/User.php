@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Laravel\Sanctum\HasApiTokens;
 
@@ -98,5 +99,27 @@ class User extends Authenticatable
     public function Folders(): HasMany
     {
         return $this->hasMany(FolderUser::class);
+    }
+
+    /**
+     * Get all of the Files for the User
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function Files(): HasMany
+    {
+        return $this->hasMany(FileUser::class);
+    }
+
+    public function scopeIsAdmin()
+    {
+        $roles = Auth::user()->roles;
+
+        foreach ($roles as $rol) {
+            if ($rol->id == 1) {
+                return true;
+            }
+        }
+        return false;
     }
 }

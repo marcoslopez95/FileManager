@@ -2,14 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\File\FileStoreRequest;
-use App\Http\Requests\File\FileUpdateRequest;
-use App\Http\Services\FileService;
-use Illuminate\Http\Request;
+use App\Http\Services\UserService;
 
-class FileController extends BaseController
+class UserController extends BaseController
 {
-    public function __construct(FileService $service)
+    public function __construct(UserService $service)
     {
         parent::__construct($service);
     }
@@ -30,10 +27,10 @@ class FileController extends BaseController
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(FileStoreRequest $request)
-    {
-        return parent::_store($request);
-    }
+    // public function store(RolStoreRequest $request)
+    // {
+    //     return $this->service->store($request);
+    // }
 
     /**
      * Display the specified resource.
@@ -53,10 +50,10 @@ class FileController extends BaseController
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(FileUpdateRequest $request, $id)
-    {
-        return parent::_update($id, $request);
-    }
+    // public function update(RolUpdateRequest $request, $id)
+    // {
+    //     return $this->service->update($id, $request);
+    // }
 
     /**
      * Remove the specified resource from storage.
@@ -64,13 +61,8 @@ class FileController extends BaseController
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
-    {
-        return parent::_delete($id);
-    }
-
-    public function PermitsByFile($file)
-    {
-        return $this->service->PermitsByFile($file);
-    }
+    // public function destroy($id)
+    // {
+    //     return parent::_delete($id);
+    // }
 }

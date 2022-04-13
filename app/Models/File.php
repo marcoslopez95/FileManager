@@ -62,13 +62,23 @@ class File extends Model
         return $this->belongsTo(Folder::class);
     }
 
+    // /**
+    //  * Get all of the usuarios for the File
+    //  *
+    //  * @return \Illuminate\Database\Eloquent\Relations\HasManyThrough
+    //  */
+    // public function usuarios(): HasManyThrough
+    // {
+    //     return $this->hasManyThrough(User::class, FilePermit::class);
+    // }
+
     /**
      * Get all of the usuarios for the File
      *
-     * @return \Illuminate\Database\Eloquent\Relations\HasManyThrough
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function usuarios(): HasManyThrough
+    public function usuarios()
     {
-        return $this->hasManyThrough(User::class, FilePermit::class);
+        return $this->hasMany(FileUser::class, 'file_id');
     }
 }

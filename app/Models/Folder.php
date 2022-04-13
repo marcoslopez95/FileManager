@@ -33,4 +33,13 @@ class Folder extends Model
         return $this->hasMany(File::class);
     }
 
+    /**
+     * Get all of the Users for the User
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function Users(): HasMany
+    {
+        return $this->hasMany(FolderUser::class);
+    }
 }

@@ -17,16 +17,19 @@ class AdminController extends Controller
         $this->service = $service;
     }
 
-    public function AsignarRol(AsignarRolRequest $request){
+    public function AsignarRol(AsignarRolRequest $request)
+    {
 
         return $this->service->AsignarRol($request);
     }
 
-    public function AsignarArchivos(AsignarArchivosRequest $request){
-
+    public function AsignarArchivos(AsignarArchivosRequest $request)
+    {
+        return $this->service->AsignarArchivos($request);
     }
 
-    public function AsignarCarpetas(AsignarCarpetasRequest $request){
+    public function AsignarCarpetas(AsignarCarpetasRequest $request)
+    {
         return $this->service->AsignarCarpetas($request);
     }
 }

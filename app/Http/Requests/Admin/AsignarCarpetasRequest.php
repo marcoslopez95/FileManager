@@ -15,13 +15,13 @@ class AsignarCarpetasRequest extends BaseRequest
     {
         $roles = $this->user()->roles;
         foreach ($roles as $rol) {
-            if($rol->id == 1)
+            if ($rol->id == 1)
                 return true;
         }
         return false;
     }
 
-     /**
+    /**
      * Get the validation rules that apply to the request.
      *
      * @return array
@@ -32,6 +32,8 @@ class AsignarCarpetasRequest extends BaseRequest
             //
             'folders' => 'required|array|min:1',
             'folders.*' => 'numeric|exists:folders,id',
+            'permits' => 'required|array|min:1',
+            'permits.*' => 'numeric|exists:permits,id',
             'user' => 'required|numeric|exists:users,id'
         ];
     }

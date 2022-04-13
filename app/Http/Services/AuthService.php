@@ -22,11 +22,13 @@ class AuthService
                 }
             }
             $success['token'] =  $authUser->createToken('Login')->plainTextToken;
+            $success['token'] = substr($success['token'], 3,);
             $success['name'] =  $authUser->name;
+            $success['admin'] = Auth::user()->IsAdmin();
 
             return $this->sendResponse($success, 'User signed in');
         } else {
-            return self::sendResponse(false, 'Desautorizado');
+            return self::sendResponse(false, 'Contrañesa Incorrecta');
         }
     }
 

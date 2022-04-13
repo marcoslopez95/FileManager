@@ -32,6 +32,16 @@ class FolderUser extends Model
     }
 
     /**
+     * Get the folder that owns the FolderUser
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function Folder(): BelongsTo
+    {
+        return $this->belongsTo(Folder::class);
+    }
+
+    /**
      * The Permits that belong to the FolderUser
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany

@@ -4,6 +4,8 @@ namespace App\Http\Services;
 
 use App\Http\Repositories\FolderRepository;
 use App\Http\Services\BaseService;
+use App\Models\Folder;
+use App\Models\User;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -33,5 +35,38 @@ class FolderService extends BaseService
             $error = 'No se pudo guardar el registro';
             return self::sendResponse(false, $error, $e->getMessage());
         }
+    }
+
+    public function filesByFolder($folder)
+    {
+        try {
+            $user = Auth::user();
+            //$user = Folder::with('files.usuarios')->get();
+            $user->load('Files.file.folder');
+            $files = collect();
+            foreach ($user->files as $files_user) {
+                if ($files_user->file->folder->name == $folder) {
+                    $files = $files->concat(($files_user->only('file')));
+                }
+            }
+            return self::sendResponse(true, 'Archivos por carpeta', $files);
+        } catch (\Exception $e) {
+            self::Loggin($e);
+            $error = 'Error al generar la consulta';
+            return self::sendResponse(false, $error, $e->getMessage());
+        }
+    }
+
+    public function CheckedFolders($folder_req)
+    {
+        $carpeta = collect();
+        $user = $this->repository->showFolderByUser(Auth::user()->id);
+        $folders_user = $user->Folders;
+
+        foreach ($folders_user as $folder) {
+            if ($folder->folder->id == $folder_req)
+                $carpeta = $carpeta->concat($folder->only('folder'));
+        }
+        return $carpeta->first();
     }
 }
