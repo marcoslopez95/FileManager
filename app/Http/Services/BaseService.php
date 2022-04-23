@@ -168,6 +168,7 @@ class BaseService
         }
     }
 
+
     public function CheckedPermitDelete()
     {
         $bool = false;
@@ -178,7 +179,7 @@ class BaseService
 
         foreach (Auth::user()->roles as $rol) {
             foreach ($rol->permits as $permit) {
-                if ($permit == $this->permitDelete) {
+                if ($permit->id == $this->permitDelete) {
                     $bool = true;
                 }
             }
@@ -198,7 +199,7 @@ class BaseService
 
         foreach (Auth::user()->roles as $rol) {
             foreach ($rol->permits as $permit) {
-                if ($permit == $this->permitUpdate) {
+                if ($permit->id == $this->permitUpdate) {
                     $bool = true;
                 }
             }
@@ -218,8 +219,8 @@ class BaseService
 
         foreach (Auth::user()->roles as $rol) {
             foreach ($rol->permits as $permit) {
-                dd($permit);
-                if ($permit == $this->permitShow) {
+                //dd($permit);
+                if ($permit->id == $this->permitShow) {
                     $bool = true;
                 }
             }
