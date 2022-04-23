@@ -218,6 +218,7 @@ class BaseService
 
         foreach (Auth::user()->roles as $rol) {
             foreach ($rol->permits as $permit) {
+                dd($permit);
                 if ($permit == $this->permitShow) {
                     $bool = true;
                 }
