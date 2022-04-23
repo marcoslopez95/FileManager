@@ -92,4 +92,40 @@ class FileService extends BaseService
             throw new \Exception("No tiene permisos para agregar archivos a esa carpeta");
         }
     }
+
+    public function edit($file){
+        try {
+            self::CheckedPermitRead();
+            $file = $this->repository->show($file);
+            $carpeta = $file->folder->name;
+            $path = $carpeta . "\/" . $file->name;
+            return Storage::download($path);
+        } catch (\Exception $e) {
+            self::Loggin($e);
+            $error = 'Ocurrió un problema al descargar el archivo';
+            return self::sendResponse(false, $error, $e->getMessage());
+        }
+    }
+
+    public function update($id, Request $request)
+    {
+        try {
+            self::CheckedPermitUpdated();
+            $file = $this->repository->show($id);
+            $carpeta = $file->folder->name;
+            $path = $carpeta . "\/" . $file->name;
+            $path_backup = $carpeta . "\/backup_" . $file->name;
+            if(Storage::exists($path_backup)){
+                Storage::delete($path_backup);
+            }
+            Storage::move($path, $path_backup);
+            $upload = $request->file('file');
+            $path = $upload->storeAs($carpeta, $file->name);
+            return self::sendResponse(true, 'Archivo Actualizado', $file, 201);
+        } catch (\Exception $e) {
+            self::Loggin($e);
+            $error = 'Ocurrió un problema al descargar el archivo';
+            return self::sendResponse(false, $error, $e->getMessage());
+        }
+    }
 }

@@ -207,4 +207,24 @@ class BaseService
             throw new \Exception("No tiene permisos para esta acción");
         }
     }
+
+    public function CheckedPermitRead()
+    {
+        $bool = false;
+        $bool = false;
+        if (self::CheckedIsAdmin()) {
+            return;
+        }
+
+        foreach (Auth::user()->roles as $rol) {
+            foreach ($rol->permits as $permit) {
+                if ($permit == $this->permitShow) {
+                    $bool = true;
+                }
+            }
+        }
+        if (!$bool) {
+            throw new \Exception("No tiene permisos para esta acción");
+        }
+    }
 }

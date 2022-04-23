@@ -73,4 +73,8 @@ class FileController extends BaseController
     {
         return $this->service->PermitsByFile($file);
     }
+
+    public function edit($file){
+        return $this->service->edit($file);
+    }
 }
