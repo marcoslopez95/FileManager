@@ -42,6 +42,11 @@ class FolderService extends BaseService
         try {
             $user = Auth::user();
             //$user = Folder::with('files.usuarios')->get();
+            if (self::CheckedIsAdmin()) {
+                $folder = Folder::where('name', $folder)->first();
+                $files = $folder->load('files')->files;
+                return self::sendResponse(true, 'Archivos por carpeta', $files);
+            }
             $user->load('Files.file.folder');
             $files = collect();
             foreach ($user->files as $files_user) {
