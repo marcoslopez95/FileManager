@@ -19,7 +19,7 @@ class FileUpdateRequest extends BaseRequest
           'name' => ['required', 'string', Rule::exists('files', 'name')],
           //  'description' => 'required|string',
           'file' => [ 'required', 'file' ],
-          'extension' => 'in:doc,docx,xls,xls,csv',
+          'extension' => 'in:doc,docx,xlsx,xls,csv',
           //  'folder_id' => 'required|numeric|exists:App\Models\Folder,id'
         ];
     }

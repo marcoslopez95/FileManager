@@ -115,6 +115,7 @@ class FileService extends BaseService
             $carpeta = $file->folder->name;
             $path = $carpeta . "\/" . $file->name;
             $path_backup = $carpeta . "\/backup_" . $file->name;
+            dd($request->all());
             if(Storage::exists($path_backup)){
                 Storage::delete($path_backup);
             }

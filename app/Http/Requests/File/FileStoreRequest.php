@@ -19,7 +19,7 @@ class FileStoreRequest extends BaseRequest
             //
             //'name' => 'required|string|unique:files',
             'file' => ['required', 'file'],
-            'extension' => 'in:doc,docx,xls,xls,csv',
+            'extension' => 'in:doc,docx,xlsx,xls,csv',
             'description' => 'required|string',
             'folder' => 'required|string|exists:folders,name'
         ];
