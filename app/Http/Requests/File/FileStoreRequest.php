@@ -34,7 +34,8 @@ class FileStoreRequest extends BaseRequest
             'mimes' => 'Solo se permiten archivos con extension: :values',
             'unique' => 'El campo :attribute debe ser único',
             'numeric' => 'El campo :attribute debe ser un numero',
-            'exists' => 'El campo :attribute no es una carpeta'
+            'exists' => 'El campo :attribute no es una carpeta',
+            'in' => 'Solo se permiten archivos con extension: :values'
         ];
     }
 

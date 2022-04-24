@@ -20,8 +20,10 @@ class FileUpdateRequest extends BaseRequest
         return [
             //
           //  'name' => ['required', 'string', Rule::unique('files', 'name')->ignore($this->file, "name")],
-            'description' => 'required|string',
-            'folder_id' => 'required|numeric|exists:App\Models\Folder,id'
+          //  'description' => 'required|string',
+          'file' => [ 'required', 'file' ],
+          'extension' => 'in:doc,docx,xls,xls,csv',
+          //  'folder_id' => 'required|numeric|exists:App\Models\Folder,id'
         ];
     }
 
@@ -33,8 +35,22 @@ class FileUpdateRequest extends BaseRequest
             'string' => 'El campo :attribute debe ser texto',
             'unique' => 'El campo :attribute debe ser único',
             'numeric' => 'El campo :attribute debe ser un numero',
-            'exists' => 'El campo :attribute no es una carpeta'
+            'exists' => 'El campo :attribute no es una carpeta',
+            'file' => 'Debe enviarse un archivo',
+
+            'in' => 'Solo se permiten archivos con extension: :values'
         ];
     }
 
+     /**
+     * Prepare the data for validation.
+     *
+     * @return void
+     */
+    protected function prepareForValidation()
+    {
+        $this->merge([
+            'extension' => $this->file->getClientOriginalExtension(),
+        ]);
+    }
 }
