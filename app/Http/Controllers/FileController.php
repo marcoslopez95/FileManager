@@ -55,7 +55,8 @@ class FileController extends BaseController
      */
     public function update(Request $request, $id)
     {
-        dd($request->all());
+        dump($request->all());
+        return response()->json('asd',422);
         return parent::_update($id, $request);
     }
 
