@@ -48,6 +48,7 @@ class FileUpdateRequest extends BaseRequest
     {
         $this->merge([
             'extension' => $this->file->getClientOriginalExtension(),
+            'name'      => $this->file->getClientOriginalName(),
         ]);
     }
 }
