@@ -19,7 +19,7 @@ class FileUpdateRequest extends BaseRequest
     {
         return [
             //
-          //  'name' => ['required', 'string', Rule::unique('files', 'name')->ignore($this->file, "name")],
+          'name' => ['required', 'string', Rule::exists('files', 'name')],
           //  'description' => 'required|string',
           'file' => [ 'required', 'file' ],
           'extension' => 'in:doc,docx,xls,xls,csv',
@@ -35,7 +35,7 @@ class FileUpdateRequest extends BaseRequest
             'string' => 'El campo :attribute debe ser texto',
             'unique' => 'El campo :attribute debe ser único',
             'numeric' => 'El campo :attribute debe ser un numero',
-            'exists' => 'El campo :attribute no es una carpeta',
+            'exists' => 'El archivo que va a subir debe llamarse igual al archivo que va a actualizar',
             'file' => 'Debe enviarse un archivo',
 
             'in' => 'Solo se permiten archivos con extension: :values'
