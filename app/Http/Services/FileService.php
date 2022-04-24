@@ -110,12 +110,12 @@ class FileService extends BaseService
     public function update($id, Request $request)
     {
         try {
-            self::CheckedPermitUpdated();
+            //self::CheckedPermitUpdated();
+            parent::update($id,$request);
             $file = $this->repository->show($id);
             $carpeta = $file->folder->name;
             $path = $carpeta . "\/" . $file->name;
             $path_backup = $carpeta . "\/backup_" . $file->name;
-            dd($request->all());
             if(Storage::exists($path_backup)){
                 Storage::delete($path_backup);
             }
