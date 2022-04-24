@@ -53,8 +53,9 @@ class FileController extends BaseController
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(FileUpdateRequest $request, $id)
+    public function update(Request $request, $id)
     {
+        dd($request->all());
         return parent::_update($id, $request);
     }
 
