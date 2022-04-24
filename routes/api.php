@@ -41,7 +41,8 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/file/{file}/permits', [FileController::class, 'PermitsByFile']);
     Route::get('/folder/{folder}/permits', [FolderController::class, 'PermitsByFolder']);
     Route::resource('folders', FolderController::class);
-    Route::resource('files', FileController::class);
+    Route::resource('files', FileController::class)->except(['update']);
+    Route::post('files/{file}', [FileController::class,'update']);
     Route::resource('rols', RolController::class);
     ########################
 

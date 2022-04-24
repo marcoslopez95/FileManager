@@ -3,10 +3,7 @@
 namespace App\Http\Requests\File;
 
 use App\Http\Requests\BaseRequest;
-use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Http\Response;
 use Illuminate\Validation\Rule;
-use Illuminate\Validation\ValidationException;
 
 class FileUpdateRequest extends BaseRequest
 {
