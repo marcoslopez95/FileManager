@@ -51,5 +51,6 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::post('/file_user', [AdminController::class, 'AsignarArchivos']);
         Route::post('/folder_user', [AdminController::class, 'AsignarCarpetas']);
         Route::resource('users', UserController::class);
+        Route::get('/user/{user}/files',[UserController::class, 'ArchivosUsuario']);
     });
 });

@@ -65,4 +65,8 @@ class UserController extends BaseController
     // {
     //     return parent::_delete($id);
     // }
+
+    public function ArchivosUsuario($user){
+        return $this->service->ArchivosUsuario($user);
+    }
 }

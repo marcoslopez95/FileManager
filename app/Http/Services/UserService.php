@@ -11,4 +11,10 @@ class UserService extends BaseService
     {
         parent::__construct($permit);
     }
+
+    public function ArchivosUsuario($user){
+        $user = $this->repository->show(($user));
+        $user->load('Files.File');
+        return $user;
+    }
 }

@@ -100,6 +100,9 @@ class BaseService
         }
     }
 
+    // ###################################################################
+
+
     public function sendResponse($success = true, $message, $data = [], $code = 200)
     {
         if (!$success) {
